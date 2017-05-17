@@ -17,7 +17,18 @@ import biz.infoas.moxyweather.domain.WeatherFormated;
 
 public class WeatherAdapter extends RecyclerView.Adapter<WeatherViewHolder> {
 
+
+
+    public interface OnClickWeatherListener {
+        void onClickWeather(WeatherFormated weatherFormated, int position);
+    }
+
     private List<WeatherFormated> weatherList = new ArrayList<>();
+    private OnClickWeatherListener onClickWeatherListener;
+
+    public WeatherAdapter(OnClickWeatherListener onClickWeatherListener) {
+        this.onClickWeatherListener = onClickWeatherListener;
+    }
 
     @Override
     public WeatherViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -26,8 +37,8 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(WeatherViewHolder holder, int position) {
-        WeatherFormated weatherFormated = weatherList.get(position);
+    public void onBindViewHolder(WeatherViewHolder holder, final int position) {
+        final WeatherFormated weatherFormated = weatherList.get(position);
         holder.imageTypeWeather.setImageResource(weatherFormated.getImage());
         holder.textViewWeekday.setText(weatherFormated.getDay());
         holder.textViewTypeWeather.setText(weatherFormated.getTypeWeather());
@@ -37,6 +48,14 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherViewHolder> {
         holder.textViewtPressure.setText(weatherFormated.getPressure());
         holder.textViewWindSpeed.setText(weatherFormated.getWindSpeed());
         holder.textViewWindDirection.setText(weatherFormated.getWindDirection());
+        holder.layoutWeather.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (onClickWeatherListener != null) {
+                    onClickWeatherListener.onClickWeather(weatherFormated, position);
+                }
+            }
+        });
     }
 
     @Override

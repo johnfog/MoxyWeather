@@ -11,4 +11,5 @@ public class Const {
     public static final String CNT = "10";
     public static final String UTILS = "metric";
     public static final String LANG = "ru";
+    public static final String INTENT_WEATHER_FORMATED = "weatherFormated";
 }

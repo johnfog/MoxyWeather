@@ -1,6 +1,8 @@
 package biz.infoas.moxyweather.ui.activity.weather;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
@@ -14,6 +16,7 @@ import biz.infoas.moxyweather.domain.Weather;
 import biz.infoas.moxyweather.domain.WeatherFormated;
 import biz.infoas.moxyweather.domain.util.Const;
 import biz.infoas.moxyweather.interactor.WeatherInteractror;
+import biz.infoas.moxyweather.ui.activity.detail.DetailActivity;
 import rx.Subscriber;
 
 /**
@@ -53,5 +56,11 @@ public class WeatherPresenter extends MvpPresenter<WeatherView> {
                 getViewState().showWeatherList(weatherFormateds);
             }
         });
+    }
+
+    public void openDetailActivity(Activity activity, WeatherFormated weatherFormated, int position) {
+        Intent intentDetail = new Intent(activity, DetailActivity.class);
+        intentDetail.putExtra(Const.INTENT_WEATHER_FORMATED, weatherFormated);
+        activity.startActivity(intentDetail);
     }
 }

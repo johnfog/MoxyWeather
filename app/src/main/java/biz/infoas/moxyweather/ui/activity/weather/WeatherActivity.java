@@ -29,13 +29,12 @@ public class WeatherActivity extends MvpAppCompatActivity implements WeatherView
     @InjectPresenter
     WeatherPresenter presenter;
 
-    @Inject
-    WeatherAdapter weatherAdapter;
-
     @BindView(R.id.recycler_weather)
     RecyclerView recyclerWeather;
     @BindView(R.id.progress_weather)
     ProgressBar progressBar;
+
+    private WeatherAdapter weatherAdapter;
 
     public WeatherActivity() {
         App.getAppComponent().inject(this);
@@ -44,6 +43,12 @@ public class WeatherActivity extends MvpAppCompatActivity implements WeatherView
     private void initRecycler() {
         recyclerWeather.setLayoutManager(new LinearLayoutManager(this));
         recyclerWeather.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL)); // Добавляем разделитель между элементами
+        weatherAdapter = new WeatherAdapter(new WeatherAdapter.OnClickWeatherListener() {
+            @Override
+            public void onClickWeather(WeatherFormated weatherFormated, int position) {
+                presenter.openDetailActivity(WeatherActivity.this, weatherFormated, position);
+            }
+        });
         recyclerWeather.setAdapter(weatherAdapter); // Применяем адаптер для recyclerViewWeather
     }
 
@@ -53,7 +58,6 @@ public class WeatherActivity extends MvpAppCompatActivity implements WeatherView
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather);
         ButterKnife.bind(this);
-      //  getMvpDelegate().onAttach();
 
         initRecycler();
        // presenter.getWeather("53.536639","49.393022");
