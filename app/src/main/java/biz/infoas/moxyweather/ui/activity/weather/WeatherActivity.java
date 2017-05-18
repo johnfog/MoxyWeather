@@ -1,30 +1,34 @@
 package biz.infoas.moxyweather.ui.activity.weather;
 
-import android.support.v7.app.AppCompatActivity;
+import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.google.android.gms.location.LocationSettingsStates;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 import biz.infoas.moxyweather.R;
 import biz.infoas.moxyweather.app.App;
-import biz.infoas.moxyweather.domain.Weather;
 import biz.infoas.moxyweather.domain.WeatherFormated;
+import biz.infoas.moxyweather.domain.util.Const;
 import biz.infoas.moxyweather.ui.activity.weather.adapter.WeatherAdapter;
+import biz.infoas.moxyweather.ui.activity.weather.base.BaseLocationActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class WeatherActivity extends MvpAppCompatActivity implements WeatherView {
+public class WeatherActivity extends BaseLocationActivity implements WeatherView {
+
+    private final static String TAG = "WeatherActivity";
 
     @InjectPresenter
     WeatherPresenter presenter;
@@ -33,8 +37,11 @@ public class WeatherActivity extends MvpAppCompatActivity implements WeatherView
     RecyclerView recyclerWeather;
     @BindView(R.id.progress_weather)
     ProgressBar progressBar;
+    @BindView(R.id.refresh_weather)
+    SwipeRefreshLayout refreshLayout;
 
     private WeatherAdapter weatherAdapter;
+    private boolean isPermissionLocationGranted = false;
 
     public WeatherActivity() {
         App.getAppComponent().inject(this);
@@ -52,20 +59,42 @@ public class WeatherActivity extends MvpAppCompatActivity implements WeatherView
         recyclerWeather.setAdapter(weatherAdapter); // Применяем адаптер для recyclerViewWeather
     }
 
+    private void initFloatinActionButton() {
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (isPermissionLocationGranted) {
+                    presenter.updateLocation(WeatherActivity.this);
+                } else {
+                    getPermission();
+                }
+            }
+        });
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather);
         ButterKnife.bind(this);
-
         initRecycler();
-       // presenter.getWeather("53.536639","49.393022");
+        initFloatinActionButton();
     }
 
     @Override
     public void showWeatherList(List<WeatherFormated> listWeather) {
         weatherAdapter.updateWeatherList(listWeather);
+    }
+
+    @Override
+    public void showLocationUser(Location locationUser) {
+        presenter.getWeather(locationUser);
+    }
+
+    @Override
+    public void showErrorLocationUser(String error) {
+        Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -75,15 +104,49 @@ public class WeatherActivity extends MvpAppCompatActivity implements WeatherView
 
     @Override
     public void hideProgress() {
+        refreshLayout.setEnabled(true);
+        refreshLayout.setRefreshing(false);
         recyclerWeather.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.GONE);
     }
 
     @Override
     public void showProgress() {
+        refreshLayout.setEnabled(false);
         recyclerWeather.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
     }
 
+
+    @Override
+    protected void onLocationPermissionGranted() {
+        isPermissionLocationGranted = true;
+        presenter.locationUser(WeatherActivity.this);
+    }
+
+    @Override
+    protected void onLocationPermissionDenied() {
+        isPermissionLocationGranted = false;
+        hideProgress();
+        Toast.makeText(this, "Разрешения не предоставлены", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case Const.REQUEST_CHECK_SETTINGS:
+                switch (resultCode) {
+                    case RESULT_OK:
+                        presenter.locationUser(WeatherActivity.this);
+                        break;
+                    case RESULT_CANCELED:
+                        Toast.makeText(this, "Геолокация не включена", Toast.LENGTH_SHORT).show();
+                        break;
+                    default:
+                        break;
+                }
+                break;
+        }
+    }
 
 }

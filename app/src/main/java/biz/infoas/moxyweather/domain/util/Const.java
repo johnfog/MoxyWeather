@@ -12,4 +12,6 @@ public class Const {
     public static final String UTILS = "metric";
     public static final String LANG = "ru";
     public static final String INTENT_WEATHER_FORMATED = "weatherFormated";
+    public static final int LOCATION_TIMEOUT_IN_SECONDS = 5;
+    public static final  int REQUEST_CHECK_SETTINGS = 1337;
 }

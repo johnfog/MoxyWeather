@@ -14,8 +14,8 @@ public interface WeatherAPI {
 
 
     @GET("data/2.5/forecast/daily")
-    Observable<Weather> getWeatherFromServer(@Query("lat") String lat,
-                                             @Query("lon") String lon,
+    Observable<Weather> getWeatherFromServer(@Query("lat") Double lat,
+                                             @Query("lon") Double lon,
                                              @Query("cnt") String cnt,
                                              @Query("units") String units,
                                              @Query("lang") String lang,

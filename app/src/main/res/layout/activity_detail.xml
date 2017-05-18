@@ -13,17 +13,26 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Температура"/>
+        android:text="Температура"
+        android:id="@+id/tv_detail_temp"/>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Скорость ветра"/>
+        android:text="Скорость ветра"
+        android:id="@+id/tv_detail_wind_speed"/>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Направление ветра"/>
+        android:text="Направление ветра"
+        android:id="@+id/tv_detail_direction_wind"/>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Давление"/>
+        android:text="Давление"
+        android:id="@+id/tv_detail_pressure"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Влажность"
+        android:id="@+id/tv_detail_humidity"/>
 </LinearLayout>
