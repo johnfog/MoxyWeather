@@ -11,12 +11,13 @@ import java.util.List;
 
 import biz.infoas.moxyweather.domain.Weather;
 import biz.infoas.moxyweather.domain.WeatherFormated;
+import biz.infoas.moxyweather.domain.WeatherWithCityName;
 
 @StateStrategyType(AddToEndSingleStrategy.class)
 public interface WeatherView extends MvpView {
 
     @StateStrategyType(SingleStateStrategy.class)
-    void showWeatherList(List<WeatherFormated> listWeather);
+    void showWeather(List<WeatherFormated> listWeather, String city);
     @StateStrategyType(SingleStateStrategy.class)
     void showLocationUser(Location locationUser);
     void showErrorLocationUser(String error);

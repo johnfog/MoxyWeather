@@ -16,6 +16,7 @@ import javax.inject.Inject;
 import biz.infoas.moxyweather.app.App;
 import biz.infoas.moxyweather.domain.Weather;
 import biz.infoas.moxyweather.domain.WeatherFormated;
+import biz.infoas.moxyweather.domain.WeatherWithCityName;
 import biz.infoas.moxyweather.domain.util.Const;
 import biz.infoas.moxyweather.interactor.WeatherInteractror;
 import biz.infoas.moxyweather.ui.activity.detail.DetailActivity;
@@ -42,7 +43,7 @@ public class WeatherPresenter extends MvpPresenter<WeatherView> {
 
     public void getWeather(Location locationUser) {
         getViewState().showProgress();
-        weatherInteractror.getWeather(locationUser.getLatitude(),locationUser.getLongitude()).subscribe(new Subscriber<List<WeatherFormated>>() {
+        weatherInteractror.getWeather(locationUser.getLatitude(),locationUser.getLongitude()).subscribe(new Subscriber<WeatherWithCityName>() {
             @Override
             public void onCompleted() {
 
@@ -55,16 +56,17 @@ public class WeatherPresenter extends MvpPresenter<WeatherView> {
             }
 
             @Override
-            public void onNext(List<WeatherFormated> weatherFormateds) {
+            public void onNext(WeatherWithCityName weatherWithCityName) {
                 getViewState().hideProgress();
-                getViewState().showWeatherList(weatherFormateds);
+                getViewState().showWeather(weatherWithCityName.weatherFormatedList, weatherWithCityName.cityName);
             }
         });
     }
 
-    public void openDetailActivity(Activity activity, WeatherFormated weatherFormated, int position) {
+    public void openDetailActivity(Activity activity, WeatherFormated weatherFormated, String city, int position) {
         Intent intentDetail = new Intent(activity, DetailActivity.class);
         intentDetail.putExtra(Const.INTENT_WEATHER_FORMATED, weatherFormated);
+        intentDetail.putExtra(Const.INTENT_WEATHER_CITY, city);
         activity.startActivity(intentDetail);
     }
 

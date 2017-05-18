@@ -20,6 +20,7 @@ import java.util.List;
 import biz.infoas.moxyweather.R;
 import biz.infoas.moxyweather.app.App;
 import biz.infoas.moxyweather.domain.WeatherFormated;
+import biz.infoas.moxyweather.domain.WeatherWithCityName;
 import biz.infoas.moxyweather.domain.util.Const;
 import biz.infoas.moxyweather.ui.activity.weather.adapter.WeatherAdapter;
 import biz.infoas.moxyweather.ui.activity.weather.base.BaseLocationActivity;
@@ -52,8 +53,8 @@ public class WeatherActivity extends BaseLocationActivity implements WeatherView
         recyclerWeather.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL)); // Добавляем разделитель между элементами
         weatherAdapter = new WeatherAdapter(new WeatherAdapter.OnClickWeatherListener() {
             @Override
-            public void onClickWeather(WeatherFormated weatherFormated, int position) {
-                presenter.openDetailActivity(WeatherActivity.this, weatherFormated, position);
+            public void onClickWeather(WeatherFormated weatherFormated, String city, int position) {
+                presenter.openDetailActivity(WeatherActivity.this, weatherFormated, city, position);
             }
         });
         recyclerWeather.setAdapter(weatherAdapter); // Применяем адаптер для recyclerViewWeather
@@ -83,8 +84,8 @@ public class WeatherActivity extends BaseLocationActivity implements WeatherView
     }
 
     @Override
-    public void showWeatherList(List<WeatherFormated> listWeather) {
-        weatherAdapter.updateWeatherList(listWeather);
+    public void showWeather(List<WeatherFormated> listWeather, String city) {
+        weatherAdapter.updateWeatherList(listWeather, city);
     }
 
     @Override

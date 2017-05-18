@@ -28,6 +28,7 @@ import biz.infoas.moxyweather.app.App;
 import biz.infoas.moxyweather.app.api.WeatherAPI;
 import biz.infoas.moxyweather.domain.Weather;
 import biz.infoas.moxyweather.domain.WeatherFormated;
+import biz.infoas.moxyweather.domain.WeatherWithCityName;
 import biz.infoas.moxyweather.domain.util.Const;
 import biz.infoas.moxyweather.ui.activity.weather.WeatherActivity;
 import pl.charmas.android.reactivelocation.ReactiveLocationProvider;
@@ -53,51 +54,55 @@ public class WeatherInteractror {
         App.getAppComponent().inject(this);
     }
 
-    public Observable<List<WeatherFormated>> getWeather(Double lat, Double lon) {
+    public Observable<WeatherWithCityName> getWeather(Double lat, Double lon) {
         return apiWeather.getWeatherFromServer(lat, lon, Const.CNT, Const.UTILS, Const.LANG, Const.WEATHER_API)
-                .flatMap(new Func1<Weather, Observable<WeatherFormated>>() {
+                .flatMap(new Func1<Weather, Observable<WeatherWithCityName>>() {
                     @Override
-                    public Observable<WeatherFormated> call(Weather weather) {
-                        return Observable.from(weatherToFormat(weather.list));
+                    public Observable<WeatherWithCityName> call(Weather weather) {
+
+                        return Observable.just(weatherToFormat(weather));
                     }
-                }).doOnNext(new Action1<WeatherFormated>() {
+                }).doOnNext(new Action1<WeatherWithCityName>() {
                     @Override
-                    public void call(WeatherFormated weatherFormated) {
+                    public void call(WeatherWithCityName weatherFormated) {
                         //TODO тут сейвить в БД
                     }
                 }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread()).toList();
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     // Метод заполняет myWeather
-    private List<WeatherFormated> weatherToFormat(List<Weather.ListWeather> listWeather) {
+    private WeatherWithCityName weatherToFormat(Weather weather) {
         String weatherDay;
         String weatherNight;
         Date date;
-        List<WeatherFormated> myWeatherList = new ArrayList<>();
-        for (int i = 0; i < listWeather.size(); i++) {
+        WeatherWithCityName newWeather = new WeatherWithCityName();
+        List<WeatherFormated> weatherFormatedList = new ArrayList<>();
+        for (int i = 0; i < weather.list.size(); i++) {
             date = new Date();
-            date.setTime((long) listWeather.get(i).dt * 1000);
-            String drawableName = "weather" + listWeather.get(i).weather.get(0).icon;
+            date.setTime((long) weather.list.get(i).dt * 1000);
+            String drawableName = "weather" + weather.list.get(i).weather.get(0).icon;
             //получаем из имени ресурса идентификатор картинки
             int weatherIcon = context.getResources().getIdentifier(drawableName, "drawable", context.getPackageName());
             SimpleDateFormat dateFormat = new SimpleDateFormat("E, d MMMM", Locale.getDefault());
-            weatherDay = String.valueOf(listWeather.get(i).temp.morn.intValue()) + "°";
-            weatherNight = String.valueOf(listWeather.get(i).temp.night.intValue()) + "°";
+            weatherDay = String.valueOf(weather.list.get(i).temp.morn.intValue()) + "°";
+            weatherNight = String.valueOf(weather.list.get(i).temp.night.intValue()) + "°";
 
-            WeatherFormated weather = new WeatherFormated();
-            weather.setImage(weatherIcon);
-            weather.setDay(dateFormat.format(date));
-            weather.setTypeWeather(String.valueOf(listWeather.get(i).weather.get(0).description));
-            weather.setTemperatureDay(weatherDay);
-            weather.setTemperatureNight(weatherNight);
-            weather.setHumidity(String.valueOf(listWeather.get(i).humidity));
-            weather.setPressure(String.valueOf(listWeather.get(i).pressure));
-            weather.setWindSpeed(String.valueOf(listWeather.get(i).speed));
-            weather.setDirection(String.valueOf(listWeather.get(i).deg));
-            myWeatherList.add(weather);
+            WeatherFormated weatherFormated = new WeatherFormated();
+            weatherFormated.setImage(weatherIcon);
+            weatherFormated.setDay(dateFormat.format(date));
+            weatherFormated.setTypeWeather(String.valueOf(weather.list.get(i).weather.get(0).description));
+            weatherFormated.setTemperatureDay(weatherDay);
+            weatherFormated.setTemperatureNight(weatherNight);
+            weatherFormated.setHumidity(String.valueOf(weather.list.get(i).humidity));
+            weatherFormated.setPressure(String.valueOf(weather.list.get(i).pressure));
+            weatherFormated.setWindSpeed(String.valueOf(weather.list.get(i).speed));
+            weatherFormated.setDirection(String.valueOf(weather.list.get(i).deg));
+            weatherFormatedList.add(weatherFormated);
         }
-        return myWeatherList;
+        newWeather.weatherFormatedList = weatherFormatedList;
+        newWeather.cityName = weather.city.name;
+        return newWeather;
     }
 
     public Observable<Location> getUserLocation(final Activity activity) {

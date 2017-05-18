@@ -10,6 +10,7 @@ import java.util.List;
 
 import biz.infoas.moxyweather.R;
 import biz.infoas.moxyweather.domain.WeatherFormated;
+import biz.infoas.moxyweather.domain.WeatherWithCityName;
 
 /**
  * Created by devel on 17.05.2017.
@@ -20,9 +21,10 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherViewHolder> {
 
 
     public interface OnClickWeatherListener {
-        void onClickWeather(WeatherFormated weatherFormated, int position);
+        void onClickWeather(WeatherFormated weatherFormated, String city, int position);
     }
 
+    private String city;
     private List<WeatherFormated> weatherList = new ArrayList<>();
     private OnClickWeatherListener onClickWeatherListener;
 
@@ -52,7 +54,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherViewHolder> {
             @Override
             public void onClick(View view) {
                 if (onClickWeatherListener != null) {
-                    onClickWeatherListener.onClickWeather(weatherFormated, position);
+                    onClickWeatherListener.onClickWeather(weatherFormated, city, position);
                 }
             }
         });
@@ -63,7 +65,8 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherViewHolder> {
         return weatherList.size();
     }
 
-    public void updateWeatherList(List<WeatherFormated> listWeather) {
+    public void updateWeatherList(List<WeatherFormated> listWeather, String city) {
+        this.city = city;
         weatherList.clear();
         weatherList.addAll(listWeather);
         this.notifyDataSetChanged();
