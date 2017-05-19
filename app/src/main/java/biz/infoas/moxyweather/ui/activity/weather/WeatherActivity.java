@@ -7,20 +7,18 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
-import com.google.android.gms.location.LocationSettingsStates;
 
 import java.util.List;
 
 import biz.infoas.moxyweather.R;
 import biz.infoas.moxyweather.app.App;
-import biz.infoas.moxyweather.domain.WeatherFormated;
-import biz.infoas.moxyweather.domain.WeatherWithCityName;
+import biz.infoas.moxyweather.domain.util.models.WeatherFormated;
 import biz.infoas.moxyweather.domain.util.Const;
 import biz.infoas.moxyweather.ui.activity.weather.adapter.WeatherAdapter;
 import biz.infoas.moxyweather.ui.activity.weather.base.BaseLocationActivity;
@@ -40,6 +38,8 @@ public class WeatherActivity extends BaseLocationActivity implements WeatherView
     ProgressBar progressBar;
     @BindView(R.id.refresh_weather)
     SwipeRefreshLayout refreshLayout;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
     private WeatherAdapter weatherAdapter;
     private boolean isPermissionLocationGranted = false;
@@ -79,12 +79,19 @@ public class WeatherActivity extends BaseLocationActivity implements WeatherView
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather);
         ButterKnife.bind(this);
+        setSupportActionBar(toolbar);
         initRecycler();
         initFloatinActionButton();
     }
 
     @Override
-    public void showWeather(List<WeatherFormated> listWeather, String city) {
+    public void showWeather(List<WeatherFormated> listWeather, final String city) {
+        toolbar.post(new Runnable() {
+            @Override
+            public void run() {
+                toolbar.setTitle("Место: " +city);
+            }
+        });
         weatherAdapter.updateWeatherList(listWeather, city);
     }
 
@@ -122,7 +129,7 @@ public class WeatherActivity extends BaseLocationActivity implements WeatherView
     @Override
     protected void onLocationPermissionGranted() {
         isPermissionLocationGranted = true;
-        presenter.locationUser(WeatherActivity.this);
+        presenter.isNeedUpdateWeather(WeatherActivity.this);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package biz.infoas.moxyweather.domain;
+package biz.infoas.moxyweather.domain.util.models;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

@@ -4,40 +4,107 @@
     android:id="@+id/activity_detail"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="biz.infoas.moxyweather.ui.activity.detail.DetailActivity"
-    android:orientation="vertical">
-    <TextView
+    tools:context="biz.infoas.moxyweather.ui.activity.detail.DetailActivity">
+
+    <include layout="@layout/toolbar" />
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Температура"
-        android:id="@+id/tv_detail_city_name"/>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Температура"
-        android:id="@+id/tv_detail_temp"/>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Скорость ветра"
-        android:id="@+id/tv_detail_wind_speed"/>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Направление ветра"
-        android:id="@+id/tv_detail_direction_wind"/>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Давление"
-        android:id="@+id/tv_detail_pressure"/>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Влажность"
-        android:id="@+id/tv_detail_humidity"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp">
+        <TextView
+            android:id="@+id/tv_detail_data"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Data"
+            android:textColor="@android:color/black"
+            android:textSize="18sp" />
+        <TextView
+            android:id="@+id/tv_detail_type_weather"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TypeWeather"
+            android:textColor="@android:color/black"
+            android:textSize="18sp" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="6dp"
+            android:layout_marginTop="6dp"
+            android:background="@android:color/darker_gray" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/img_weather"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/weather01d" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:paddingLeft="4dp">
+
+                <TextView
+                    android:id="@+id/tv_detail_temp1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Температура1"
+                    android:textColor="@android:color/black"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/tv_detail_temp2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Температура2"
+                    android:textColor="@android:color/black"
+                    android:textSize="18sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="6dp"
+            android:layout_marginTop="6dp"
+            android:background="@android:color/darker_gray" />
+
+        <TextView
+            android:id="@+id/tv_detail_wind_speed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Скорость ветра"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/tv_detail_direction_wind"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Направление ветра"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/tv_detail_pressure"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Давление"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/tv_detail_humidity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Влажность"
+            android:textSize="16sp" />
+    </LinearLayout>
 </LinearLayout>

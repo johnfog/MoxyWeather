@@ -1,18 +1,15 @@
 package biz.infoas.moxyweather.ui.activity.detail;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import biz.infoas.moxyweather.R;
-import biz.infoas.moxyweather.domain.WeatherFormated;
-import biz.infoas.moxyweather.domain.WeatherWithCityName;
+import biz.infoas.moxyweather.domain.util.models.WeatherFormated;
 import biz.infoas.moxyweather.domain.util.Const;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -23,10 +20,10 @@ public class DetailActivity extends MvpAppCompatActivity {
     private WeatherFormated weatherFormated;
     private String city;
 
-    @BindView(R.id.tv_detail_city_name)
-    TextView tvCityName;
-    @BindView(R.id.tv_detail_temp)
-    TextView tvTemp;
+    @BindView(R.id.tv_detail_temp1)
+    TextView tvTemp1;
+    @BindView(R.id.tv_detail_temp2)
+    TextView tvTemp2;
     @BindView(R.id.tv_detail_wind_speed)
     TextView tvWindSpeed;
     @BindView(R.id.tv_detail_direction_wind)
@@ -35,12 +32,21 @@ public class DetailActivity extends MvpAppCompatActivity {
     TextView tvPressure;
     @BindView(R.id.tv_detail_humidity)
     TextView tvHumidity;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.img_weather)
+    ImageView imgWeather;
+    @BindView(R.id.tv_detail_data)
+    TextView tvData;
+    @BindView(R.id.tv_detail_type_weather)
+    TextView tvTypeWeather;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
         ButterKnife.bind(this);
+        setSupportActionBar(toolbar);
         Intent intentWeather = getIntent();
         Bundle bundle = intentWeather.getExtras();
         if (bundle != null) {
@@ -52,11 +58,20 @@ public class DetailActivity extends MvpAppCompatActivity {
     }
 
     private void setupTextViews() {
-        tvCityName.setText(city);
-        tvTemp.setText(weatherFormated.getTemperatureDay());
-        tvWindSpeed.setText(weatherFormated.getWindSpeed());
+        toolbar.post(new Runnable() {
+            @Override
+            public void run() {
+                toolbar.setTitle("Место: " +city);
+            }
+        });
+        tvData.setText(weatherFormated.getDay());
+        tvTypeWeather.setText(weatherFormated.getTypeWeather());
+        imgWeather.setImageResource(weatherFormated.getImage());
+        tvTemp1.setText("Днём: " +weatherFormated.getTemperatureDay() + "C");
+        tvTemp2.setText("Ночью: " +weatherFormated.getTemperatureNight() + "C");
+        tvWindSpeed.setText(weatherFormated.getWindSpeed()+" м/с");
         tvDirectionWind.setText(weatherFormated.getWindDirection());
-        tvPressure.setText(weatherFormated.getPressure());
-        tvHumidity.setText(weatherFormated.getHumidity());
+        tvPressure.setText(weatherFormated.getPressure()+ " мм рт.ст.");
+        tvHumidity.setText(weatherFormated.getHumidity()+"%");
     }
 }

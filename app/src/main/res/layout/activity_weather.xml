@@ -6,16 +6,24 @@
     android:layout_height="match_parent"
     tools:context="biz.infoas.moxyweather.ui.activity.weather.WeatherActivity">
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/refresh_weather"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_weather"
+        <include layout="@layout/toolbar" />
+
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/refresh_weather"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </android.support.v4.widget.SwipeRefreshLayout>
+            android:layout_height="match_parent">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_weather"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </android.support.v4.widget.SwipeRefreshLayout>
+    </LinearLayout>
 
     <ProgressBar
         android:id="@+id/progress_weather"

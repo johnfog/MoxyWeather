@@ -1,12 +1,10 @@
 package biz.infoas.moxyweather.interactor;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.IntentSender;
-import android.content.pm.PackageManager;
+import android.content.SharedPreferences;
 import android.location.Location;
-import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
 import com.google.android.gms.common.api.Status;
@@ -15,6 +13,7 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -26,17 +25,18 @@ import javax.inject.Inject;
 
 import biz.infoas.moxyweather.app.App;
 import biz.infoas.moxyweather.app.api.WeatherAPI;
-import biz.infoas.moxyweather.domain.Weather;
-import biz.infoas.moxyweather.domain.WeatherFormated;
-import biz.infoas.moxyweather.domain.WeatherWithCityName;
+import biz.infoas.moxyweather.domain.db.dao.WeatherDAO;
+import biz.infoas.moxyweather.domain.util.TimeUtils;
+import biz.infoas.moxyweather.domain.util.models.Weather;
+import biz.infoas.moxyweather.domain.util.models.WeatherFormated;
+import biz.infoas.moxyweather.domain.util.models.WeatherWithCityName;
 import biz.infoas.moxyweather.domain.util.Const;
-import biz.infoas.moxyweather.ui.activity.weather.WeatherActivity;
 import pl.charmas.android.reactivelocation.ReactiveLocationProvider;
 import rx.Observable;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
 /**
@@ -49,6 +49,10 @@ public class WeatherInteractror {
     WeatherAPI apiWeather;
     @Inject
     Context context;
+    @Inject
+    WeatherDAO weatherDAO;
+    @Inject
+    SharedPreferences sharedPreferences;
 
     public WeatherInteractror() {
         App.getAppComponent().inject(this);
@@ -65,10 +69,19 @@ public class WeatherInteractror {
                 }).doOnNext(new Action1<WeatherWithCityName>() {
                     @Override
                     public void call(WeatherWithCityName weatherFormated) {
-                        //TODO тут сейвить в БД
+                        try {
+                            weatherDAO.addWeather(weatherFormated.weatherFormatedList);
+                            sharedPreferences.edit().putString(Const.SHARED_PREFERENCE_CITY,weatherFormated.cityName).apply();
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Observable<List<WeatherFormated>> getWeatherDB() {
+        return weatherDAO.getAllWeather();
     }
 
     // Метод заполняет myWeather
@@ -138,5 +151,20 @@ public class WeatherInteractror {
                     }
                 });
 
+    }
+
+    public Observable<List<WeatherFormated>> isNeedUpdateWeatherFromServer() {
+        return Observable.zip(Observable.just(TimeUtils.isNecessaryUpdateWeather(TimeUtils.getDatetimeNow(), sharedPreferences.getString(Const.SHARED_PREFERENCE_TIME_UPDATE, ""))),
+                weatherDAO.getAllWeather(), new Func2<Boolean, List<WeatherFormated>, List<WeatherFormated>>() {
+                    @Override
+                    public List<WeatherFormated> call(Boolean aBoolean, List<WeatherFormated> weatherFormateds) {
+                        List<WeatherFormated> weather = new ArrayList<>();
+                        if (aBoolean || weatherFormateds.size() == 0) {
+                            return weather;
+                        } else {
+                            return weatherFormateds;
+                        }
+                    }
+                });
     }
 }

@@ -1,7 +1,6 @@
 package biz.infoas.moxyweather.app.api;
 
-import biz.infoas.moxyweather.domain.Weather;
-import dagger.Provides;
+import biz.infoas.moxyweather.domain.util.models.Weather;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 import rx.Observable;

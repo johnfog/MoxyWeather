@@ -1,4 +1,4 @@
-package biz.infoas.moxyweather.domain;
+package biz.infoas.moxyweather.domain.util.models;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -11,7 +11,7 @@ import biz.infoas.moxyweather.domain.db.dao.WeatherDAO;
  * Created by devel on 17.05.2017.
  */
 
-//@DatabaseTable(tableName = WeatherFormated.TABLE_NAME_WEATHER, daoClass = WeatherDAO.class)
+@DatabaseTable(tableName = WeatherFormated.TABLE_NAME_WEATHER, daoClass = WeatherDAO.class)
 public class WeatherFormated implements Serializable {
     public static final String TABLE_NAME_WEATHER = "weather_table";
 
@@ -29,34 +29,34 @@ public class WeatherFormated implements Serializable {
 
 
 
-    //@DatabaseField(columnName = FIELD_NAME_ID, generatedId = true)
+    @DatabaseField(columnName = FIELD_NAME_ID, generatedId = true)
     private int id;
 
-    //@DatabaseField(columnName = IMAGE)
+    @DatabaseField(columnName = IMAGE)
     private int image;
 
-    //@DatabaseField(columnName = DAY)
+    @DatabaseField(columnName = DAY)
     private String day;
 
-    //@DatabaseField(columnName = TYPE_WEATHER)
+    @DatabaseField(columnName = TYPE_WEATHER)
     private String typeWeather;
 
-    //@DatabaseField(columnName = TEMPERATURE_DAY)
+    @DatabaseField(columnName = TEMPERATURE_DAY)
     private String temperatureDay;
 
-    //@DatabaseField(columnName = TEMPERATURE_NIGHT)
+    @DatabaseField(columnName = TEMPERATURE_NIGHT)
     private String temperatureNight;
 
-    //@DatabaseField(columnName = HUMIDITY)
+    @DatabaseField(columnName = HUMIDITY)
     private String humidity;
 
-    //@DatabaseField(columnName = PRESSURE)
+    @DatabaseField(columnName = PRESSURE)
     private String pressure;
 
-    //@DatabaseField(columnName = WIND_SPEED)
+    @DatabaseField(columnName = WIND_SPEED)
     private String windSpeed;
 
-    //@DatabaseField(columnName = WIND_DIRECTION)
+    @DatabaseField(columnName = WIND_DIRECTION)
     private String direction;
 
 
