@@ -9,7 +9,7 @@ import android.widget.TextView;
 import com.arellomobile.mvp.MvpAppCompatActivity;
 
 import biz.infoas.moxyweather.R;
-import biz.infoas.moxyweather.domain.util.models.WeatherFormated;
+import biz.infoas.moxyweather.domain.models.WeatherFormated;
 import biz.infoas.moxyweather.domain.util.Const;
 import butterknife.BindView;
 import butterknife.ButterKnife;

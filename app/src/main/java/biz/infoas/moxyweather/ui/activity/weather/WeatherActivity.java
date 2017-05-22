@@ -9,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -18,8 +19,9 @@ import java.util.List;
 
 import biz.infoas.moxyweather.R;
 import biz.infoas.moxyweather.app.App;
-import biz.infoas.moxyweather.domain.util.models.WeatherFormated;
+import biz.infoas.moxyweather.domain.models.WeatherFormated;
 import biz.infoas.moxyweather.domain.util.Const;
+import biz.infoas.moxyweather.ui.activity.search_weather.SearchWeatherActivity;
 import biz.infoas.moxyweather.ui.activity.weather.adapter.WeatherAdapter;
 import biz.infoas.moxyweather.ui.activity.weather.base.BaseLocationActivity;
 import butterknife.BindView;
@@ -40,6 +42,8 @@ public class WeatherActivity extends BaseLocationActivity implements WeatherView
     SwipeRefreshLayout refreshLayout;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+    @BindView(R.id.test)
+    Button btnTest;
 
     private WeatherAdapter weatherAdapter;
     private boolean isPermissionLocationGranted = false;
@@ -82,6 +86,13 @@ public class WeatherActivity extends BaseLocationActivity implements WeatherView
         setSupportActionBar(toolbar);
         initRecycler();
         initFloatinActionButton();
+        btnTest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(WeatherActivity.this, SearchWeatherActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override

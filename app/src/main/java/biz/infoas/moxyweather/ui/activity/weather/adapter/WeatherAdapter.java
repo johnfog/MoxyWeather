@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import biz.infoas.moxyweather.R;
-import biz.infoas.moxyweather.domain.util.models.WeatherFormated;
+import biz.infoas.moxyweather.domain.models.WeatherFormated;
 
 /**
  * Created by devel on 17.05.2017.

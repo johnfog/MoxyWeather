@@ -10,8 +10,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import biz.infoas.moxyweather.app.App;
-import biz.infoas.moxyweather.domain.util.models.WeatherFormated;
+import biz.infoas.moxyweather.domain.models.WeatherFormated;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;

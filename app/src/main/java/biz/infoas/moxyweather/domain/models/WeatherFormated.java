@@ -1,4 +1,4 @@
-package biz.infoas.moxyweather.domain.util.models;
+package biz.infoas.moxyweather.domain.models;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;

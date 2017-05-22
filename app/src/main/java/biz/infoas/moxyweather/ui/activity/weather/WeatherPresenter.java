@@ -14,8 +14,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 import biz.infoas.moxyweather.app.App;
-import biz.infoas.moxyweather.domain.util.models.WeatherFormated;
-import biz.infoas.moxyweather.domain.util.models.WeatherWithCityName;
+import biz.infoas.moxyweather.domain.models.WeatherFormated;
+import biz.infoas.moxyweather.domain.models.WeatherWithCityName;
 import biz.infoas.moxyweather.domain.util.Const;
 import biz.infoas.moxyweather.interactor.WeatherInteractror;
 import biz.infoas.moxyweather.ui.activity.detail.DetailActivity;

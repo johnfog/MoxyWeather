@@ -9,7 +9,7 @@ import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
 
 import java.util.List;
 
-import biz.infoas.moxyweather.domain.util.models.WeatherFormated;
+import biz.infoas.moxyweather.domain.models.WeatherFormated;
 
 @StateStrategyType(AddToEndSingleStrategy.class)
 public interface WeatherView extends MvpView {

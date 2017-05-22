@@ -8,7 +8,7 @@ import java.sql.SQLException;
 
 import javax.inject.Singleton;
 
-import biz.infoas.moxyweather.domain.util.models.WeatherFormated;
+import biz.infoas.moxyweather.domain.models.WeatherFormated;
 import biz.infoas.moxyweather.domain.db.DBHelper;
 import biz.infoas.moxyweather.domain.db.dao.WeatherDAO;
 import dagger.Module;

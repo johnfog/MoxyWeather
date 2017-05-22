@@ -1,4 +1,4 @@
-package biz.infoas.moxyweather.domain.util.models;
+package biz.infoas.moxyweather.domain.models;
 
 import java.io.Serializable;
 import java.util.List;

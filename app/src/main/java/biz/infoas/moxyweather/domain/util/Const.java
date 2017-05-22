@@ -6,7 +6,7 @@ package biz.infoas.moxyweather.domain.util;
 
 public class Const {
 
-    public static final String BASE_URL = "http://api.openweathermap.org/";
+    public static final String BASE_URL = "https://maps.googleapis.com/";
     public static final String WEATHER_API = "17c37b1a89b27832b33fe590e0c7a2b2";
     public static final String CNT = "10";
     public static final String UTILS = "metric";
@@ -19,4 +19,5 @@ public class Const {
     public static final String KEY_DATE_TIME = "yyyy-MM-dd HH:mm:ss";
     public static final long TIME_FOR_UPDATE = 7200000; // 3 часа в секундах
     public static final String SHARED_PREFERENCE_TIME_UPDATE = "shared_preference_time_update";
+    public static final String GOOGLE_KEY = "AIzaSyD42I6Mf7BnhxlLWF1OW6Y3EIGHDRaEG5c";
 }

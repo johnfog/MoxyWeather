@@ -3,6 +3,7 @@ package biz.infoas.moxyweather.app.modules;
 import javax.inject.Singleton;
 
 import biz.infoas.moxyweather.BuildConfig;
+import biz.infoas.moxyweather.app.api.GoogleAPI;
 import biz.infoas.moxyweather.app.api.WeatherAPI;
 import biz.infoas.moxyweather.domain.util.Const;
 import dagger.Module;
@@ -40,6 +41,12 @@ public class HttpModule {
 	@Singleton
 	public WeatherAPI provideApiService(Retrofit retrofit) {
 		return retrofit.create(WeatherAPI.class);
+	}
+
+	@Provides
+	@Singleton
+	public GoogleAPI provideGoogleAPI(Retrofit retrofit) {
+		return retrofit.create(GoogleAPI.class);
 	}
 
 }
