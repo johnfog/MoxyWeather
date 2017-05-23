@@ -64,6 +64,11 @@ public class SearchWeatherActivity extends MvpAppCompatActivity implements Searc
     }
 
     @Override
+    public void showResultTextChange(String textChange) {
+        presenter.getWeatherList(textChange);
+    }
+
+    @Override
     public void showError(String error) {
         Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
     }
@@ -76,5 +81,11 @@ public class SearchWeatherActivity extends MvpAppCompatActivity implements Searc
     @Override
     public void hideProgress() {
         progressSearchWeather.setVisibility(View.GONE);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.onDestroy();
     }
 }

@@ -14,9 +14,7 @@ import biz.infoas.moxyweather.domain.models.WeatherFormated;
 @StateStrategyType(AddToEndSingleStrategy.class)
 public interface WeatherView extends MvpView {
 
-    @StateStrategyType(SingleStateStrategy.class)
     void showWeather(List<WeatherFormated> listWeather, String city);
-    @StateStrategyType(SingleStateStrategy.class)
     void showLocationUser(Location locationUser);
     void showErrorLocationUser(String error);
 

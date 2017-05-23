@@ -16,10 +16,11 @@
             android:layout_height="wrap_content"
             android:id="@+id/edt_name_search_city"/>
         <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:layout_gravity="end"
-            android:id="@+id/progress_search_weather"/>
+            android:id="@+id/progress_search_weather"
+            android:visibility="gone"/>
     </FrameLayout>
 
     <android.support.v7.widget.RecyclerView

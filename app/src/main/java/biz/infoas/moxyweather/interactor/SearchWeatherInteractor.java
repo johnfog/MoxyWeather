@@ -36,33 +36,32 @@ public class SearchWeatherInteractor {
         App.getAppComponent().inject(this);
     }
 
-    public Observable<List<String>> observableTextChange(TextView searchTextView) {
+    public Observable<String> observableTextChange(TextView searchTextView) {
         return RxTextView.textChanges(searchTextView).skip(1) // Пропускаем первый вызов
                 .throttleLast(100, TimeUnit.MILLISECONDS)
                 .debounce(300, TimeUnit.MILLISECONDS) // Задержка
                 .onBackpressureLatest()
                 .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(new Func1<CharSequence, Observable<Prediction>>() {
+                .flatMap(new Func1<CharSequence, Observable<String>>() {
                     @Override
-                    public Observable<Prediction> call(CharSequence charSequence) {
-                        return observableGetCites(charSequence.toString());
+                    public Observable<String> call(CharSequence charSequence) {
+                        return Observable.just(charSequence.toString());
                     }
-                })
-                .flatMap(new Func1<Prediction, Observable<String>>() {
-                    @Override
-                    public Observable<String> call(Prediction prediction) {
-                        return Observable.just(prediction.description);
-                    }
-                }).toList();
+                });
     }
 
-    private Observable<Prediction> observableGetCites(String nameChars) {
+    public Observable<List<String>> observableGetCites(String nameChars) {
        return googleAPI.getCity(nameChars, "(cities)", Const.GOOGLE_KEY).flatMap(new Func1<City, Observable<Prediction>>() {
             @Override
             public Observable<Prediction> call(City city) {
                 return Observable.from(city.predictions);
             }
-        }).subscribeOn(Schedulers.io())
+        }).flatMap(new Func1<Prediction, Observable<String>>() {
+                   @Override
+                   public Observable<String> call(Prediction prediction) {
+                       return Observable.just(prediction.description);
+                   }
+               }).toList().subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 }

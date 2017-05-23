@@ -20,7 +20,9 @@ import biz.infoas.moxyweather.domain.util.Const;
 import biz.infoas.moxyweather.interactor.WeatherInteractror;
 import biz.infoas.moxyweather.ui.activity.detail.DetailActivity;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.functions.Action1;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by devel on 16.05.2017.
@@ -39,6 +41,10 @@ public class WeatherPresenter extends MvpPresenter<WeatherView> {
     private Location lastLocationUser;
     private boolean isDownloadWeather = false; // Переменная определяет, загружена ли погода или нет (не важно из БД или из сети)
     private boolean isProcessDownload = false; // Если переменная true, значит идёт загрузка погоды из сети.
+    private Subscription subGetWeather;
+    private Subscription subGetLocation;
+    private Subscription subIsNeedUpdateWeather;
+
 
     public WeatherPresenter() {
         App.getAppComponent().inject(this);
@@ -51,7 +57,7 @@ public class WeatherPresenter extends MvpPresenter<WeatherView> {
         isProcessDownload = true;
         isDownloadWeather = false;
         getViewState().showProgress();
-        weatherInteractror.getWeather(locationUser.getLatitude(), locationUser.getLongitude()).subscribe(new Subscriber<WeatherWithCityName>() {
+        subGetWeather = weatherInteractror.getWeather(locationUser.getLatitude(), locationUser.getLongitude()).subscribe(new Subscriber<WeatherWithCityName>() {
             @Override
             public void onCompleted() {
 
@@ -59,6 +65,7 @@ public class WeatherPresenter extends MvpPresenter<WeatherView> {
 
             @Override
             public void onError(Throwable e) {
+                isProcessDownload = false;
                 getViewState().hideProgress();
                 getViewState().showError(e.getMessage());
             }
@@ -93,7 +100,7 @@ public class WeatherPresenter extends MvpPresenter<WeatherView> {
 
     private void getLocation(Activity activity) {
         getViewState().showProgress();
-        weatherInteractror.getUserLocation(activity).subscribe(new Action1<Location>() {
+        subGetLocation = weatherInteractror.getUserLocation(activity).subscribe(new Action1<Location>() {
             @Override
             public void call(Location location) {
                 lastLocationUser = location;
@@ -113,7 +120,7 @@ public class WeatherPresenter extends MvpPresenter<WeatherView> {
         if (isDownloadWeather) {
             return; // Если у нас уже загружена погода, то повторно загружать не надо, выходим из метода
         }
-        weatherInteractror.isNeedUpdateWeatherFromServer().subscribe(new Subscriber<List<WeatherFormated>>() {
+        subIsNeedUpdateWeather = weatherInteractror.isNeedUpdateWeatherFromServer().subscribe(new Subscriber<List<WeatherFormated>>() {
             @Override
             public void onCompleted() {
 
@@ -135,5 +142,18 @@ public class WeatherPresenter extends MvpPresenter<WeatherView> {
                 }
             }
         });
+    }
+
+    public void onDestroy() {
+        if (subGetWeather != null) {
+            subGetWeather.unsubscribe();
+        }
+        if (subGetLocation != null) {
+            subGetLocation.unsubscribe();
+        }
+        if (subIsNeedUpdateWeather != null) {
+            subIsNeedUpdateWeather.unsubscribe();
+        }
+
     }
 }

@@ -1,13 +1,18 @@
 package biz.infoas.moxyweather.ui.activity.weather;
 
+import android.app.SearchManager;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -42,8 +47,6 @@ public class WeatherActivity extends BaseLocationActivity implements WeatherView
     SwipeRefreshLayout refreshLayout;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @BindView(R.id.test)
-    Button btnTest;
 
     private WeatherAdapter weatherAdapter;
     private boolean isPermissionLocationGranted = false;
@@ -86,13 +89,6 @@ public class WeatherActivity extends BaseLocationActivity implements WeatherView
         setSupportActionBar(toolbar);
         initRecycler();
         initFloatinActionButton();
-        btnTest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(WeatherActivity.this, SearchWeatherActivity.class);
-                startActivity(intent);
-            }
-        });
     }
 
     @Override
@@ -168,4 +164,25 @@ public class WeatherActivity extends BaseLocationActivity implements WeatherView
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_search:
+                Intent intent = new Intent(WeatherActivity.this, SearchWeatherActivity.class);
+                startActivity(intent);
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.onDestroy();
+    }
 }
