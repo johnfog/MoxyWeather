@@ -1,6 +1,5 @@
 package biz.infoas.moxyweather.interactor;
 
-import android.text.TextUtils;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.widget.RxTextView;
@@ -10,17 +9,14 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import biz.infoas.moxyweather.R;
 import biz.infoas.moxyweather.app.App;
-import biz.infoas.moxyweather.app.api.GoogleAPI;
+import biz.infoas.moxyweather.app.api.WeatherAPI;
 import biz.infoas.moxyweather.domain.models.city.City;
 import biz.infoas.moxyweather.domain.models.city.Prediction;
 import biz.infoas.moxyweather.domain.util.Const;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
 /**
@@ -30,7 +26,7 @@ import rx.schedulers.Schedulers;
 public class SearchWeatherInteractor {
 
     @Inject
-    GoogleAPI googleAPI;
+    WeatherAPI weatherAPI;
 
     public SearchWeatherInteractor() {
         App.getAppComponent().inject(this);
@@ -51,7 +47,7 @@ public class SearchWeatherInteractor {
     }
 
     public Observable<List<String>> observableGetCites(String nameChars) {
-       return googleAPI.getCity(nameChars, "(cities)", Const.GOOGLE_KEY).flatMap(new Func1<City, Observable<Prediction>>() {
+       return weatherAPI.getCity(nameChars, "(cities)", Const.GOOGLE_KEY).flatMap(new Func1<City, Observable<Prediction>>() {
             @Override
             public Observable<Prediction> call(City city) {
                 return Observable.from(city.predictions);

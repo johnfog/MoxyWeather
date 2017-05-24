@@ -20,7 +20,7 @@ import biz.infoas.moxyweather.ui.activity.search_weather.adapter.SearchWeatherAd
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class SearchWeatherActivity extends MvpAppCompatActivity implements SearchWeatherView{
+public class SearchWeatherActivity extends MvpAppCompatActivity implements SearchWeatherView {
 
     @InjectPresenter
     SearchWeatherPresenter presenter;
@@ -58,6 +58,12 @@ public class SearchWeatherActivity extends MvpAppCompatActivity implements Searc
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.onDestroy();
+    }
+
+    @Override
     public void showResult(List<String> strings) {
         searchWeatherAdapter.updateSearchList(strings);
 
@@ -81,11 +87,5 @@ public class SearchWeatherActivity extends MvpAppCompatActivity implements Searc
     @Override
     public void hideProgress() {
         progressSearchWeather.setVisibility(View.GONE);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        presenter.onDestroy();
     }
 }

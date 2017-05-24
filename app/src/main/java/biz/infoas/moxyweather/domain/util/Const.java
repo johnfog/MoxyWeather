@@ -6,7 +6,8 @@ package biz.infoas.moxyweather.domain.util;
 
 public class Const {
 
-    public static final String BASE_URL = "https://maps.googleapis.com/";
+    public static final String BASE_URL = "http://api.openweathermap.org/";
+    public static final String GOOGLE_URL = "https://maps.googleapis.com/";
     public static final String WEATHER_API = "17c37b1a89b27832b33fe590e0c7a2b2";
     public static final String CNT = "10";
     public static final String UTILS = "metric";

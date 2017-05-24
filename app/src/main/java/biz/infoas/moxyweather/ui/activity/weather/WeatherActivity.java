@@ -49,7 +49,6 @@ public class WeatherActivity extends BaseLocationActivity implements WeatherView
     Toolbar toolbar;
 
     private WeatherAdapter weatherAdapter;
-    private boolean isPermissionLocationGranted = false;
 
     public WeatherActivity() {
         App.getAppComponent().inject(this);
@@ -71,11 +70,7 @@ public class WeatherActivity extends BaseLocationActivity implements WeatherView
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if (isPermissionLocationGranted) {
                     presenter.updateLocation(WeatherActivity.this);
-                } else {
-                    getPermission();
-                }
             }
         });
     }
@@ -135,13 +130,11 @@ public class WeatherActivity extends BaseLocationActivity implements WeatherView
 
     @Override
     protected void onLocationPermissionGranted() {
-        isPermissionLocationGranted = true;
         presenter.isNeedUpdateWeather(WeatherActivity.this);
     }
 
     @Override
     protected void onLocationPermissionDenied() {
-        isPermissionLocationGranted = false;
         hideProgress();
         Toast.makeText(this, "Разрешения не предоставлены", Toast.LENGTH_SHORT).show();
     }

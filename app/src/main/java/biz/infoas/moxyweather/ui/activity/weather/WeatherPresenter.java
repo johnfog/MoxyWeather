@@ -44,6 +44,7 @@ public class WeatherPresenter extends MvpPresenter<WeatherView> {
     private Subscription subGetWeather;
     private Subscription subGetLocation;
     private Subscription subIsNeedUpdateWeather;
+    private boolean isPermissionLocationGranted = false;
 
 
     public WeatherPresenter() {
@@ -94,8 +95,12 @@ public class WeatherPresenter extends MvpPresenter<WeatherView> {
         getLocation(activity);
     }
 
-    public void updateLocation(Activity activity) {
-        getLocation(activity);
+    public void updateLocation(WeatherActivity activity) {
+        if (isPermissionLocationGranted) {
+            getLocation(activity);
+        } else {
+            activity.getPermission();
+        }
     }
 
     private void getLocation(Activity activity) {
@@ -117,6 +122,7 @@ public class WeatherPresenter extends MvpPresenter<WeatherView> {
     }
 
     public void isNeedUpdateWeather(final Activity activity) {
+        isPermissionLocationGranted = true;
         if (isDownloadWeather) {
             return; // Если у нас уже загружена погода, то повторно загружать не надо, выходим из метода
         }
