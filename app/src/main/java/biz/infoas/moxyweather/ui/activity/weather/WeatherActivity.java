@@ -1,20 +1,16 @@
 package biz.infoas.moxyweather.ui.activity.weather;
 
-import android.app.SearchManager;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -23,16 +19,15 @@ import com.arellomobile.mvp.presenter.InjectPresenter;
 import java.util.List;
 
 import biz.infoas.moxyweather.R;
-import biz.infoas.moxyweather.app.App;
 import biz.infoas.moxyweather.domain.models.WeatherFormated;
 import biz.infoas.moxyweather.domain.util.Const;
 import biz.infoas.moxyweather.ui.activity.search_weather.SearchWeatherActivity;
 import biz.infoas.moxyweather.ui.activity.weather.adapter.WeatherAdapter;
-import biz.infoas.moxyweather.ui.activity.weather.base.BaseLocationActivity;
+import biz.infoas.moxyweather.ui.activity.weather.base.BaseWeatherActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class WeatherActivity extends BaseLocationActivity implements WeatherView {
+public class WeatherActivity extends BaseWeatherActivity implements WeatherView {
 
     private final static String TAG = "WeatherActivity";
 
@@ -47,12 +42,7 @@ public class WeatherActivity extends BaseLocationActivity implements WeatherView
     SwipeRefreshLayout refreshLayout;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-
     private WeatherAdapter weatherAdapter;
-
-    public WeatherActivity() {
-        App.getAppComponent().inject(this);
-    }
 
     private void initRecycler() {
         recyclerWeather.setLayoutManager(new LinearLayoutManager(this));
@@ -70,7 +60,7 @@ public class WeatherActivity extends BaseLocationActivity implements WeatherView
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                    presenter.updateLocation(WeatherActivity.this);
+                presenter.updateWeather(WeatherActivity.this);
             }
         });
     }
@@ -86,21 +76,18 @@ public class WeatherActivity extends BaseLocationActivity implements WeatherView
         initFloatinActionButton();
     }
 
+
     @Override
     public void showWeather(List<WeatherFormated> listWeather, final String city) {
         toolbar.post(new Runnable() {
             @Override
             public void run() {
-                toolbar.setTitle("Место: " +city);
+                toolbar.setTitle("Место: " + city);
             }
         });
         weatherAdapter.updateWeatherList(listWeather, city);
     }
 
-    @Override
-    public void showLocationUser(Location locationUser) {
-        presenter.getWeather(locationUser);
-    }
 
     @Override
     public void showErrorLocationUser(String error) {
@@ -135,7 +122,6 @@ public class WeatherActivity extends BaseLocationActivity implements WeatherView
 
     @Override
     protected void onLocationPermissionDenied() {
-        hideProgress();
         Toast.makeText(this, "Разрешения не предоставлены", Toast.LENGTH_SHORT).show();
     }
 
@@ -145,7 +131,7 @@ public class WeatherActivity extends BaseLocationActivity implements WeatherView
             case Const.REQUEST_CHECK_SETTINGS:
                 switch (resultCode) {
                     case RESULT_OK:
-                        presenter.locationUser(WeatherActivity.this);
+                        presenter.updateWeather(WeatherActivity.this);
                         break;
                     case RESULT_CANCELED:
                         Toast.makeText(this, "Геолокация не включена", Toast.LENGTH_SHORT).show();
@@ -162,6 +148,7 @@ public class WeatherActivity extends BaseLocationActivity implements WeatherView
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -169,13 +156,13 @@ public class WeatherActivity extends BaseLocationActivity implements WeatherView
                 Intent intent = new Intent(WeatherActivity.this, SearchWeatherActivity.class);
                 startActivity(intent);
                 break;
+            case R.id.action_location:
+                // Тут апдейтим погоду и надо сохранить координаты в sharedPrefernce, которые
+                presenter.updateLocation(WeatherActivity.this);
+                break;
         }
 
         return super.onOptionsItemSelected(item);
     }
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        presenter.onDestroy();
-    }
+
 }

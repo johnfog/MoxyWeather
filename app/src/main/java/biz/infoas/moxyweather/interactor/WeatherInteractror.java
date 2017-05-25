@@ -71,7 +71,6 @@ public class WeatherInteractror {
                     public void call(WeatherWithCityName weatherFormated) {
                         try {
                             weatherDAO.addWeather(weatherFormated.weatherFormatedList);
-                            sharedPreferences.edit().putString(Const.SHARED_PREFERENCE_CITY,weatherFormated.cityName).apply();
                         } catch (SQLException e) {
                             e.printStackTrace();
                         }

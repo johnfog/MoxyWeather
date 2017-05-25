@@ -38,27 +38,33 @@ public class WeatherPresenter extends MvpPresenter<WeatherView> {
     @Inject
     SharedPreferences sharedPreferences;
 
-    private Location lastLocationUser;
     private boolean isDownloadWeather = false; // Переменная определяет, загружена ли погода или нет (не важно из БД или из сети)
     private boolean isProcessDownload = false; // Если переменная true, значит идёт загрузка погоды из сети.
-    private Subscription subGetWeather;
-    private Subscription subGetLocation;
-    private Subscription subIsNeedUpdateWeather;
     private boolean isPermissionLocationGranted = false;
+    private String lat = "lat";
+    private String lon = "lon";
 
 
     public WeatherPresenter() {
         App.getAppComponent().inject(this);
+        updateLocSharedPref();
     }
 
-    public void getWeather(Location locationUser) {
+    private void updateLocSharedPref() {
+        lat = sharedPreferences.getString(Const.SHARED_PREFERENCE_LNG, "");
+        lon = sharedPreferences.getString(Const.SHARED_PREFERENCE_LON, "");
+    }
+
+    public void getWeather() {
+        updateLocSharedPref();
         if (isProcessDownload) {
             return; // Идёт загрузка из сети, следовательно не надо делать повторный запрос, выходим из метода.
         }
         isProcessDownload = true;
         isDownloadWeather = false;
         getViewState().showProgress();
-        subGetWeather = weatherInteractror.getWeather(locationUser.getLatitude(), locationUser.getLongitude()).subscribe(new Subscriber<WeatherWithCityName>() {
+
+        weatherInteractror.getWeather(Double.parseDouble(lat), Double.parseDouble(lon)).subscribe(new Subscriber<WeatherWithCityName>() {
             @Override
             public void onCompleted() {
 
@@ -77,6 +83,7 @@ public class WeatherPresenter extends MvpPresenter<WeatherView> {
                 isDownloadWeather = true;
                 getViewState().hideProgress();
                 getViewState().showWeather(weatherWithCityName.weatherFormatedList, weatherWithCityName.cityName);
+                sharedPreferences.edit().putString(Const.SHARED_PREFERENCE_CITY, weatherWithCityName.cityName).apply();
             }
         });
     }
@@ -88,11 +95,17 @@ public class WeatherPresenter extends MvpPresenter<WeatherView> {
         activity.startActivity(intentDetail);
     }
 
-    public void locationUser(Activity activity) {
-        if (lastLocationUser != null) {
-            return; // Если есть координаты, то повторно их не запрашиваем
+
+    public void updateWeather(WeatherActivity activity) {
+        if (isPermissionLocationGranted) {
+            if (lat.equals("") || lon.equals("")) {
+                getLocation(activity);
+            } else {
+                getWeather();
+            }
+        } else {
+            activity.getPermission();
         }
-        getLocation(activity);
     }
 
     public void updateLocation(WeatherActivity activity) {
@@ -105,12 +118,15 @@ public class WeatherPresenter extends MvpPresenter<WeatherView> {
 
     private void getLocation(Activity activity) {
         getViewState().showProgress();
-        subGetLocation = weatherInteractror.getUserLocation(activity).subscribe(new Action1<Location>() {
+        weatherInteractror.getUserLocation(activity).subscribe(new Action1<Location>() {
             @Override
             public void call(Location location) {
-                lastLocationUser = location;
+                String lat = String.valueOf(location.getLatitude());
+                String lon = String.valueOf(location.getLongitude());
+                sharedPreferences.edit().putString(Const.SHARED_PREFERENCE_LNG, lat).apply();
+                sharedPreferences.edit().putString(Const.SHARED_PREFERENCE_LON, lon).apply();
                 getViewState().hideProgress();
-                getViewState().showLocationUser(location);
+                getWeather();
             }
         }, new Action1<Throwable>() {
             @Override
@@ -123,10 +139,18 @@ public class WeatherPresenter extends MvpPresenter<WeatherView> {
 
     public void isNeedUpdateWeather(final Activity activity) {
         isPermissionLocationGranted = true;
+        // Проверяем, если координаты изменились, то обновляем погоду
+        if (!lat.equals(sharedPreferences.getString(Const.SHARED_PREFERENCE_LNG, "")) || !lon.equals(sharedPreferences.getString(Const.SHARED_PREFERENCE_LON, ""))) {
+            getWeather();
+            return;
+        }
         if (isDownloadWeather) {
             return; // Если у нас уже загружена погода, то повторно загружать не надо, выходим из метода
         }
-        subIsNeedUpdateWeather = weatherInteractror.isNeedUpdateWeatherFromServer().subscribe(new Subscriber<List<WeatherFormated>>() {
+        if (isProcessDownload) {
+            return; // В процессе загрузки, значит выходим с метода
+        }
+        weatherInteractror.isNeedUpdateWeatherFromServer().subscribe(new Subscriber<List<WeatherFormated>>() {
             @Override
             public void onCompleted() {
 
@@ -141,7 +165,7 @@ public class WeatherPresenter extends MvpPresenter<WeatherView> {
             @Override
             public void onNext(List<WeatherFormated> weatherFormateds) {
                 if (weatherFormateds.size() == 0) {
-                    locationUser(activity);
+                    getLocation(activity);
                 } else {
                     isDownloadWeather = true;
                     getViewState().showWeather(weatherFormateds, sharedPreferences.getString(Const.SHARED_PREFERENCE_CITY, ""));
@@ -150,16 +174,4 @@ public class WeatherPresenter extends MvpPresenter<WeatherView> {
         });
     }
 
-    public void onDestroy() {
-        if (subGetWeather != null) {
-            subGetWeather.unsubscribe();
-        }
-        if (subGetLocation != null) {
-            subGetLocation.unsubscribe();
-        }
-        if (subIsNeedUpdateWeather != null) {
-            subIsNeedUpdateWeather.unsubscribe();
-        }
-
-    }
 }

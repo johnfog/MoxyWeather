@@ -16,7 +16,6 @@ public interface WeatherView extends MvpView {
     void showWeather(List<WeatherFormated> listWeather, String city);
 
 
-    void showLocationUser(Location locationUser);
     void showErrorLocationUser(String error);
 
     void showError(String error);

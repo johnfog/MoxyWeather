@@ -1,5 +1,6 @@
 package biz.infoas.moxyweather.interactor;
 
+
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.widget.RxTextView;
@@ -13,8 +14,11 @@ import biz.infoas.moxyweather.app.App;
 import biz.infoas.moxyweather.app.api.WeatherAPI;
 import biz.infoas.moxyweather.domain.models.city.City;
 import biz.infoas.moxyweather.domain.models.city.Prediction;
+import biz.infoas.moxyweather.domain.models.city_location.CityLocation;
+import biz.infoas.moxyweather.domain.models.city_location.Location;
 import biz.infoas.moxyweather.domain.util.Const;
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -47,7 +51,7 @@ public class SearchWeatherInteractor {
     }
 
     public Observable<List<String>> observableGetCites(String nameChars) {
-       return weatherAPI.getCity(nameChars, "(cities)", Const.GOOGLE_KEY).flatMap(new Func1<City, Observable<Prediction>>() {
+       return weatherAPI.getCity(nameChars, "(cities)", Const.GOOGLE_KEY_AUTOCOMPLETE).flatMap(new Func1<City, Observable<Prediction>>() {
             @Override
             public Observable<Prediction> call(City city) {
                 return Observable.from(city.predictions);
@@ -58,6 +62,24 @@ public class SearchWeatherInteractor {
                        return Observable.just(prediction.description);
                    }
                }).toList().subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Observable<Location> getLocationCityByName(String nameCity) {
+        return weatherAPI.getLocationByCity(nameCity, Const.GOOGLE_KEY_GEOCODER)
+                .flatMap(new Func1<CityLocation, Observable<Location>>() {
+                    @Override
+                    public Observable<Location> call(CityLocation cityLocation) {
+                        Observable observable;
+                        if (cityLocation.getResults().size() != 1) {
+                            observable = Observable.error(new Throwable("Не могу найти координаты"));
+                        } else {
+                            Location loc = cityLocation.getResults().get(0).getGeometry().getLocation();
+                            observable = Observable.just(loc);
+                        }
+                       return observable;
+                    }
+                }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 }

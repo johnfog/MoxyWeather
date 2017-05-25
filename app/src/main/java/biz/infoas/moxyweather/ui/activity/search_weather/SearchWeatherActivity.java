@@ -32,6 +32,8 @@ public class SearchWeatherActivity extends MvpAppCompatActivity implements Searc
     ProgressBar progressSearchWeather;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+    @BindView(R.id.progress_get_location)
+    ProgressBar progressGetLocation;
     private SearchWeatherAdapter searchWeatherAdapter;
 
     private void initRecycler() {
@@ -40,7 +42,7 @@ public class SearchWeatherActivity extends MvpAppCompatActivity implements Searc
         searchWeatherAdapter = new SearchWeatherAdapter(new SearchWeatherAdapter.OnClickCityNameListener() {
             @Override
             public void OnClickCity(String nameCity) {
-                Toast.makeText(SearchWeatherActivity.this, nameCity, Toast.LENGTH_SHORT).show();
+                presenter.setCityWeather(nameCity, SearchWeatherActivity.this);
             }
         });
         recyclerSearchWeather.setAdapter(searchWeatherAdapter);
@@ -55,12 +57,6 @@ public class SearchWeatherActivity extends MvpAppCompatActivity implements Searc
         setSupportActionBar(toolbar);
         presenter.textChangeListener(edtNameSearchCity);
         initRecycler();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        presenter.onDestroy();
     }
 
     @Override
@@ -80,6 +76,11 @@ public class SearchWeatherActivity extends MvpAppCompatActivity implements Searc
     }
 
     @Override
+    public void showErrorLocation(String errorLoc) {
+        Toast.makeText(this, errorLoc, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
     public void showProgress() {
         progressSearchWeather.setVisibility(View.VISIBLE);
     }
@@ -87,5 +88,15 @@ public class SearchWeatherActivity extends MvpAppCompatActivity implements Searc
     @Override
     public void hideProgress() {
         progressSearchWeather.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showProgressLocation() {
+        progressGetLocation.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgressLocation() {
+        progressGetLocation.setVisibility(View.GONE);
     }
 }

@@ -2,6 +2,7 @@ package biz.infoas.moxyweather.app.api;
 
 import biz.infoas.moxyweather.domain.models.Weather;
 import biz.infoas.moxyweather.domain.models.city.City;
+import biz.infoas.moxyweather.domain.models.city_location.CityLocation;
 import biz.infoas.moxyweather.domain.util.Const;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
@@ -27,4 +28,8 @@ public interface WeatherAPI {
     Observable<City> getCity(@Query("input") String inputStr,
                              @Query("types") String types,
                              @Query("key") String key);
+
+    @GET(Const.GOOGLE_URL+"maps/api/geocode/json")
+    Observable<CityLocation> getLocationByCity(@Query("address") String address,
+                                               @Query("key") String key);
 }

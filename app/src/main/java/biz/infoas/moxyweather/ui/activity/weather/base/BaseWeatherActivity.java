@@ -9,17 +9,28 @@ import android.widget.Toast;
 import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.tbruyelle.rxpermissions.RxPermissions;
 
+import biz.infoas.moxyweather.app.App;
+import butterknife.ButterKnife;
 import rx.functions.Action1;
 
 /**
  * Created by devel on 18.05.2017.
  */
 
-public abstract class BaseLocationActivity extends MvpAppCompatActivity {
+public abstract class BaseWeatherActivity extends MvpAppCompatActivity {
+
+    public BaseWeatherActivity() {
+        App.getAppComponent().inject(this);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
         getPermission();
     }
 
