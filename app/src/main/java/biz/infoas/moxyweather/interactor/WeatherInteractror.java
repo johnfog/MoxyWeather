@@ -65,7 +65,7 @@ public class WeatherInteractror extends LocationObservable {
                     @Override
                     public Observable<WeatherWithCityName> call(Weather weather) {
 
-                        return Observable.just(weatherToFormat(weather));
+                        return weatherToFormat(weather);
                     }
                 }).doOnNext(new Action1<WeatherWithCityName>() {
                     @Override
@@ -84,38 +84,59 @@ public class WeatherInteractror extends LocationObservable {
         return weatherDAO.getAllWeather();
     }
 
-    // Метод заполняет myWeather
-    private WeatherWithCityName weatherToFormat(Weather weather) {
-        String weatherDay;
-        String weatherNight;
-        Date date;
-        WeatherWithCityName newWeather = new WeatherWithCityName();
-        List<WeatherFormated> weatherFormatedList = new ArrayList<>();
-        for (int i = 0; i < weather.list.size(); i++) {
-            date = new Date();
-            date.setTime((long) weather.list.get(i).dt * 1000);
-            String drawableName = "weather" + weather.list.get(i).weather.get(0).icon;
-            //получаем из имени ресурса идентификатор картинки
-            int weatherIcon = context.getResources().getIdentifier(drawableName, "drawable", context.getPackageName());
-            SimpleDateFormat dateFormat = new SimpleDateFormat("E, d MMMM", Locale.getDefault());
-            weatherDay = String.valueOf(weather.list.get(i).temp.morn.intValue()) + "°";
-            weatherNight = String.valueOf(weather.list.get(i).temp.night.intValue()) + "°";
+    private Observable<WeatherWithCityName> weatherToFormat(Weather weather) {
+        return Observable.zip(cityObserver(weather), weatherFormatedObservable(weather), new Func2<String, List<WeatherFormated>, WeatherWithCityName>() {
+            @Override
+            public WeatherWithCityName call(String s, List<WeatherFormated> weatherFormateds) {
+                WeatherWithCityName newWeather = new WeatherWithCityName();
+                newWeather.weatherFormatedList = weatherFormateds;
+                newWeather.cityName = s;
+                return newWeather;
+            }
+        });
+    }
 
-            WeatherFormated weatherFormated = new WeatherFormated();
-            weatherFormated.setImage(weatherIcon);
-            weatherFormated.setDay(dateFormat.format(date));
-            weatherFormated.setTypeWeather(String.valueOf(weather.list.get(i).weather.get(0).description));
-            weatherFormated.setTemperatureDay(weatherDay);
-            weatherFormated.setTemperatureNight(weatherNight);
-            weatherFormated.setHumidity(String.valueOf(weather.list.get(i).humidity));
-            weatherFormated.setPressure(String.valueOf(weather.list.get(i).pressure));
-            weatherFormated.setWindSpeed(String.valueOf(weather.list.get(i).speed));
-            weatherFormated.setDirection(String.valueOf(weather.list.get(i).deg));
-            weatherFormatedList.add(weatherFormated);
-        }
-        newWeather.weatherFormatedList = weatherFormatedList;
-        newWeather.cityName = weather.city.name;
-        return newWeather;
+    private Observable<String> cityObserver(Weather weather) {
+        return Observable.just(weather).flatMap(new Func1<Weather, Observable<String>>() {
+            @Override
+            public Observable<String> call(Weather weather) {
+                return Observable.just(weather.city.name);
+            }
+        });
+    }
+
+
+    // Метод заполняет myWeather
+    private Observable<List<WeatherFormated>> weatherFormatedObservable(Weather weather) {
+        return Observable.just(weather).flatMap(new Func1<Weather, Observable<Weather.ListWeather>>() {
+            @Override
+            public Observable<Weather.ListWeather> call(Weather weather) {
+                return Observable.from(weather.list);
+            }
+        }).flatMap(new Func1<Weather.ListWeather, Observable<WeatherFormated>>() {
+            @Override
+            public Observable<WeatherFormated> call(Weather.ListWeather listWeather) {
+                Date date = new Date();
+                date.setTime((long) listWeather.dt * 1000);
+                String drawableName = "weather" + listWeather.weather.get(0).icon;
+                //получаем из имени ресурса идентификатор картинки
+                int weatherIcon = context.getResources().getIdentifier(drawableName, "drawable", context.getPackageName());
+                SimpleDateFormat dateFormat = new SimpleDateFormat("E, d MMMM", Locale.getDefault());
+                String weatherDay = String.valueOf(listWeather.temp.morn.intValue()) + "°";
+                String weatherNight = String.valueOf(listWeather.temp.night.intValue()) + "°";
+                WeatherFormated weatherFormated = new WeatherFormated();
+                weatherFormated.setImage(weatherIcon);
+                weatherFormated.setDay(dateFormat.format(date));
+                weatherFormated.setTypeWeather(String.valueOf(listWeather.weather.get(0).description));
+                weatherFormated.setTemperatureDay(weatherDay);
+                weatherFormated.setTemperatureNight(weatherNight);
+                weatherFormated.setHumidity(String.valueOf(listWeather.humidity));
+                weatherFormated.setPressure(String.valueOf(listWeather.pressure));
+                weatherFormated.setWindSpeed(String.valueOf(listWeather.speed));
+                weatherFormated.setDirection(String.valueOf(listWeather.deg));
+                return Observable.just(weatherFormated);
+            }
+        }).toList();
     }
 
     public Observable<List<WeatherFormated>> isNeedUpdateWeatherFromServer() {

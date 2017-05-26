@@ -17,10 +17,9 @@ import rx.functions.Action1;
 public abstract class BaseActivity extends MvpAppCompatActivity {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void onStart() {
+        super.onStart();
         getPermission();
-
     }
 
     @Override

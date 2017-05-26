@@ -1,5 +1,6 @@
 package biz.infoas.moxyweather.ui.activity.weather.adapter;
 
+import android.content.res.Configuration;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,8 +18,6 @@ import biz.infoas.moxyweather.domain.models.WeatherFormated;
 
 public class WeatherAdapter extends RecyclerView.Adapter<WeatherViewHolder> {
 
-
-
     public interface OnClickWeatherListener {
         void onClickWeather(WeatherFormated weatherFormated, String city, int position);
     }
@@ -33,7 +32,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherViewHolder> {
 
     @Override
     public WeatherViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.items_weather, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.items_weather, parent,false);
         return new WeatherViewHolder(view);
     }
 
@@ -70,4 +69,5 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherViewHolder> {
         weatherList.addAll(listWeather);
         this.notifyDataSetChanged();
     }
+
 }
