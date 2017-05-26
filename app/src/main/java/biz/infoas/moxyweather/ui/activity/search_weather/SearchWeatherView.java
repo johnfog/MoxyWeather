@@ -11,12 +11,10 @@ import java.util.List;
 /**
  * Created by devel on 22.05.2017.
  */
-@StateStrategyType(SingleStateStrategy.class)
+@StateStrategyType(AddToEndSingleStrategy.class)
 public interface SearchWeatherView extends MvpView {
 
-    @StateStrategyType(AddToEndStrategy.class)
     void showResult(List<String> strings);
-    @StateStrategyType(AddToEndStrategy.class)
     void showResultTextChange(String textChange);
     void showError(String error);
     void showErrorLocation(String errorLoc);

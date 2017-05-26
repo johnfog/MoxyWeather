@@ -20,7 +20,14 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.activity.detail.DetailActivity" />
-        <activity android:name=".ui.activity.search_weather.SearchWeatherActivity"></activity>
+        <activity android:name=".ui.activity.search_weather.SearchWeatherActivity" />
+        <activity
+            android:name=".ui.activity.map_weather.MapWeatherActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize" />
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBYdJ-BDJeiy6Dca0OcnuAZY3xGy84Uvsw" />
     </application>
 
 </manifest>

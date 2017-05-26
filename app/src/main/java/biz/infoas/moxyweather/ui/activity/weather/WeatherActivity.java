@@ -21,6 +21,7 @@ import java.util.List;
 import biz.infoas.moxyweather.R;
 import biz.infoas.moxyweather.domain.models.WeatherFormated;
 import biz.infoas.moxyweather.domain.util.Const;
+import biz.infoas.moxyweather.ui.activity.map_weather.MapWeatherActivity;
 import biz.infoas.moxyweather.ui.activity.search_weather.SearchWeatherActivity;
 import biz.infoas.moxyweather.ui.activity.weather.adapter.WeatherAdapter;
 import biz.infoas.moxyweather.ui.activity.weather.base.BaseWeatherActivity;
@@ -40,8 +41,7 @@ public class WeatherActivity extends BaseWeatherActivity implements WeatherView 
     ProgressBar progressBar;
     @BindView(R.id.refresh_weather)
     SwipeRefreshLayout refreshLayout;
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
+
     private WeatherAdapter weatherAdapter;
 
     private void initRecycler() {
@@ -69,9 +69,6 @@ public class WeatherActivity extends BaseWeatherActivity implements WeatherView 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_weather);
-        ButterKnife.bind(this);
-        setSupportActionBar(toolbar);
         initRecycler();
         initFloatinActionButton();
     }
@@ -126,21 +123,13 @@ public class WeatherActivity extends BaseWeatherActivity implements WeatherView 
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case Const.REQUEST_CHECK_SETTINGS:
-                switch (resultCode) {
-                    case RESULT_OK:
-                        presenter.updateWeather(WeatherActivity.this);
-                        break;
-                    case RESULT_CANCELED:
-                        Toast.makeText(this, "Геолокация не включена", Toast.LENGTH_SHORT).show();
-                        break;
-                    default:
-                        break;
-                }
-                break;
-        }
+    protected void enabledGPS() {
+        presenter.updateWeather(WeatherActivity.this);
+    }
+
+    @Override
+    protected void disabledGPS() {
+        Toast.makeText(this, "Геолокация не включена", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -153,12 +142,14 @@ public class WeatherActivity extends BaseWeatherActivity implements WeatherView 
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_search:
-                Intent intent = new Intent(WeatherActivity.this, SearchWeatherActivity.class);
-                startActivity(intent);
+                presenter.openActivity(WeatherActivity.this,SearchWeatherActivity.class);
                 break;
             case R.id.action_location:
                 // Тут апдейтим погоду и надо сохранить координаты в sharedPrefernce, которые
                 presenter.updateLocation(WeatherActivity.this);
+                break;
+            case R.id.action_map:
+                presenter.openActivity(WeatherActivity.this, MapWeatherActivity.class);
                 break;
         }
 

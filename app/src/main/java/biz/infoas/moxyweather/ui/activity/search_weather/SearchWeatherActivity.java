@@ -92,6 +92,7 @@ public class SearchWeatherActivity extends MvpAppCompatActivity implements Searc
 
     @Override
     public void showProgressLocation() {
+        recyclerSearchWeather.setVisibility(View.GONE);
         progressGetLocation.setVisibility(View.VISIBLE);
     }
 

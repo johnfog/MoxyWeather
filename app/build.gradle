@@ -63,6 +63,10 @@ dependencies {
     provided 'javax.annotation:jsr250-api:1.0'
 
     //Location
-    compile 'com.google.android.gms:play-services-location:9.4.0'
-    compile 'com.google.android.gms:play-services-places:9.4.0'
+    compile 'com.google.android.gms:play-services-location:9.6.0'
+    compile 'com.google.android.gms:play-services-places:9.6.0'
+
+    //GoogleMaps
+    compile 'com.google.android.gms:play-services-maps:9.6.0'
+    compile 'com.sdoward:rxgooglemaps:1.1.1@aar'
 }

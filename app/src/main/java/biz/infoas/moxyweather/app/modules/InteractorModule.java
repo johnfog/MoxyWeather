@@ -2,6 +2,7 @@ package biz.infoas.moxyweather.app.modules;
 
 import javax.inject.Singleton;
 
+import biz.infoas.moxyweather.interactor.MapWeatherInteractor;
 import biz.infoas.moxyweather.interactor.SearchWeatherInteractor;
 import biz.infoas.moxyweather.interactor.WeatherInteractror;
 import dagger.Module;
@@ -24,6 +25,12 @@ public class InteractorModule {
     @Singleton
     public SearchWeatherInteractor provideSearchWeatherInteractor() {
         return new SearchWeatherInteractor();
+    }
+
+    @Provides
+    @Singleton
+    public MapWeatherInteractor provideMapWeatherInteractor() {
+        return new MapWeatherInteractor();
     }
 }
 

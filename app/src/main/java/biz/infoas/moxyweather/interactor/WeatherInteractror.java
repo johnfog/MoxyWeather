@@ -31,6 +31,7 @@ import biz.infoas.moxyweather.domain.models.Weather;
 import biz.infoas.moxyweather.domain.models.WeatherFormated;
 import biz.infoas.moxyweather.domain.models.WeatherWithCityName;
 import biz.infoas.moxyweather.domain.util.Const;
+import biz.infoas.moxyweather.interactor.observable.LocationObservable;
 import pl.charmas.android.reactivelocation.ReactiveLocationProvider;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -43,7 +44,7 @@ import rx.schedulers.Schedulers;
  * Created by devel on 16.05.2017.
  */
 
-public class WeatherInteractror {
+public class WeatherInteractror extends LocationObservable {
 
     @Inject
     WeatherAPI apiWeather;
@@ -115,41 +116,6 @@ public class WeatherInteractror {
         newWeather.weatherFormatedList = weatherFormatedList;
         newWeather.cityName = weather.city.name;
         return newWeather;
-    }
-
-    public Observable<Location> getUserLocation(final Activity activity) {
-        final LocationRequest request = LocationRequest.create() //standard GMS LocationRequest
-                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        final ReactiveLocationProvider locationProvider = new ReactiveLocationProvider(context);
-       return locationProvider.checkLocationSettings(
-                new LocationSettingsRequest.Builder()
-                        .addLocationRequest(request)
-                        .setAlwaysShow(true)  //Refrence: http://stackoverflow.com/questions/29824408/google-play-services-locationservices-api-new-option-never
-                        .build()
-        )
-                .doOnNext(new Action1<LocationSettingsResult>() {
-                    @Override
-                    public void call(LocationSettingsResult locationSettingsResult) {
-                        Status status = locationSettingsResult.getStatus();
-                        if (status.getStatusCode() == LocationSettingsStatusCodes.RESOLUTION_REQUIRED) {
-                            try {
-                                status.startResolutionForResult(activity, Const.REQUEST_CHECK_SETTINGS);
-                            } catch (IntentSender.SendIntentException th) {
-                                Log.e("MainActivity", "Error opening settings activity.", th);
-                            }
-                        }
-                    }
-                })
-                .flatMap(new Func1<LocationSettingsResult, Observable<Location>>() {
-                    @Override
-                    public Observable<Location> call(LocationSettingsResult locationSettingsResult) {
-                        return locationProvider.getUpdatedLocation(request)
-                                .timeout(Const.LOCATION_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS, Observable.just((Location) null), AndroidSchedulers.mainThread())
-                                .first()
-                                .observeOn(AndroidSchedulers.mainThread());
-                    }
-                });
-
     }
 
     public Observable<List<WeatherFormated>> isNeedUpdateWeatherFromServer() {

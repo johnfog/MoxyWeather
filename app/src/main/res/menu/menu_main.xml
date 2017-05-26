@@ -4,8 +4,13 @@
     <item
         android:id="@+id/action_location"
         android:icon="@drawable/ic_action_location"
-        android:title="Поиск"
+        android:title="Я"
         app:showAsAction="ifRoom|collapseActionView" />
+    <item
+        android:id="@+id/action_map"
+        android:icon="@drawable/ic_action_maps"
+        android:title="Карта"
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_search"
         android:icon="@drawable/ic_action_search"

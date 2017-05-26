@@ -19,6 +19,7 @@ import biz.infoas.moxyweather.domain.models.WeatherWithCityName;
 import biz.infoas.moxyweather.domain.util.Const;
 import biz.infoas.moxyweather.interactor.WeatherInteractror;
 import biz.infoas.moxyweather.ui.activity.detail.DetailActivity;
+import biz.infoas.moxyweather.ui.activity.search_weather.SearchWeatherActivity;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.functions.Action1;
@@ -174,4 +175,8 @@ public class WeatherPresenter extends MvpPresenter<WeatherView> {
         });
     }
 
+    public void openActivity(Activity thisActivity, Class openActivityClass) {
+        Intent intent = new Intent(thisActivity, openActivityClass);
+        thisActivity.startActivity(intent);
+    }
 }

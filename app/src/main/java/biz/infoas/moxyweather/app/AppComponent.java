@@ -11,6 +11,7 @@ import biz.infoas.moxyweather.app.modules.InteractorModule;
 import biz.infoas.moxyweather.app.modules.SharedPreferenceModule;
 import biz.infoas.moxyweather.interactor.SearchWeatherInteractor;
 import biz.infoas.moxyweather.interactor.WeatherInteractror;
+import biz.infoas.moxyweather.ui.activity.map_weather.MapWeatherPresenter;
 import biz.infoas.moxyweather.ui.activity.search_weather.SearchWeatherPresenter;
 import biz.infoas.moxyweather.ui.activity.weather.WeatherPresenter;
 import biz.infoas.moxyweather.ui.activity.weather.base.BaseWeatherActivity;
@@ -28,7 +29,7 @@ public interface AppComponent {
 	void inject(WeatherPresenter weatherPresenter);
 	void inject(WeatherInteractror weatherInteractror);
 	void inject(BaseWeatherActivity baseLocationActivity);
-
 	void inject(SearchWeatherInteractor searchWeatherInteractor);
 	void inject(SearchWeatherPresenter searchWeatherPresenter);
+	void inject(MapWeatherPresenter mapWeatherPresenter);
 }

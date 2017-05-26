@@ -24,5 +24,7 @@ public class Const {
     public static final String SHARED_PREFERENCE_LNG = "shared_preference_lng";
     public static final String GOOGLE_KEY_AUTOCOMPLETE = "AIzaSyD42I6Mf7BnhxlLWF1OW6Y3EIGHDRaEG5c";
     public static final String GOOGLE_KEY_GEOCODER = "AIzaSyCsoSOCy8iAB6HXxX6bw4qqzh8U_rJb14g";
+    public static final String GOOGLE_KEY_MAP = "AIzaSyBYdJ-BDJeiy6Dca0OcnuAZY3xGy84Uvsw";
 
+    public static final String MAP_FRAGMENT = "map_fragment";
 }

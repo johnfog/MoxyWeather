@@ -14,6 +14,7 @@ import javax.inject.Inject;
 import biz.infoas.moxyweather.app.App;
 import biz.infoas.moxyweather.domain.models.city_location.Location;
 import biz.infoas.moxyweather.domain.util.Const;
+import biz.infoas.moxyweather.domain.util.KeyboardUtil;
 import biz.infoas.moxyweather.interactor.SearchWeatherInteractor;
 import rx.Subscriber;
 import rx.Subscription;
@@ -95,6 +96,7 @@ public class SearchWeatherPresenter extends MvpPresenter<SearchWeatherView> {
     }
 
     public void setCityWeather(String nameCity, final Activity activity) {
+        KeyboardUtil.hideSoftKeyboard(activity);
         getViewState().showProgressLocation();
         interactor.getLocationCityByName(nameCity).subscribe(new Subscriber<Location>() {
             @Override
