@@ -4,7 +4,7 @@ import javax.inject.Singleton;
 
 import biz.infoas.moxyweather.BuildConfig;
 import biz.infoas.moxyweather.app.api.WeatherAPI;
-import biz.infoas.moxyweather.domain.util.Const;
+import biz.infoas.moxyweather.util.Const;
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;

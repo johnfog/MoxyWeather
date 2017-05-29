@@ -3,10 +3,9 @@ package biz.infoas.moxyweather.app.api;
 import biz.infoas.moxyweather.domain.models.Weather;
 import biz.infoas.moxyweather.domain.models.city.City;
 import biz.infoas.moxyweather.domain.models.city_location.CityLocation;
-import biz.infoas.moxyweather.domain.util.Const;
+import biz.infoas.moxyweather.util.Const;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
-import retrofit2.http.Url;
 import rx.Observable;
 
 /**

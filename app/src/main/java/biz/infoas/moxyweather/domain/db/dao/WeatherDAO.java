@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import biz.infoas.moxyweather.domain.models.WeatherFormated;
+import biz.infoas.moxyweather.interactor.transformer.AsyncTransformer;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -30,8 +31,7 @@ public class WeatherDAO extends BaseDaoImpl<WeatherFormated, Integer> {
                 Log.d("WeatherDao", "Thread getAllWeather: "+ Thread.currentThread().getName());
                 return WeatherDAO.this.queryForAll();
             }
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+        }).compose(new AsyncTransformer<>());
     }
 
     public void addWeather(final List<WeatherFormated> weathers) throws SQLException {

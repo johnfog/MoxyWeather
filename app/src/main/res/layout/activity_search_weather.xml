@@ -4,7 +4,7 @@
     android:id="@+id/activity_search_weather"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="biz.infoas.moxyweather.ui.activity.search_weather.SearchWeatherActivity"
+    tools:context=".ui.search_weather.SearchWeatherActivity"
     android:orientation="vertical">
 
     <include layout="@layout/toolbar" />

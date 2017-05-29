@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'me.tatarka.retrolambda'
 
 android {
     compileSdkVersion 25
@@ -17,56 +18,51 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile 'com.android.support:appcompat-v7:25.1.0'
     testCompile 'junit:junit:4.12'
-
     //Design 25 (добавляет Recycler)
     compile 'com.android.support:design:25.1.0'
-
     //Moxy
     compile 'com.arello-mobile:moxy:1.5.2'
     compile 'com.arello-mobile:moxy-app-compat:1.5.2'
     annotationProcessor 'com.arello-mobile:moxy-compiler:1.5.2'
-
     //ButterKnife
     compile 'com.jakewharton:butterknife:8.5.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
-
     //Rx
     compile 'io.reactivex:rxandroid:1.2.1'
     compile 'io.reactivex:rxjava:1.1.6'
     compile 'com.tbruyelle.rxpermissions:rxpermissions:0.9.4@aar'
     compile 'pl.charmas.android:android-reactive-location:0.10@aar'
     compile 'com.jakewharton.rxbinding:rxbinding:1.0.0'
-
     //Retrofit2
     compile 'com.squareup.retrofit2:retrofit:2.0.2'
     compile 'com.squareup.retrofit2:adapter-rxjava:2.0.2'
     compile 'com.squareup.retrofit2:converter-gson:2.0.0'
-
     //Interceptor
     compile 'com.squareup.okhttp3:logging-interceptor:3.1.2'
-
     //OrmLite
     compile 'com.j256.ormlite:ormlite-android:4.48'
-
     //Dagger 2
     compile 'com.google.dagger:dagger:2.5'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.5'
     provided 'javax.annotation:jsr250-api:1.0'
-
     //Location
     compile 'com.google.android.gms:play-services-location:9.6.0'
     compile 'com.google.android.gms:play-services-places:9.6.0'
-
     //GoogleMaps
     compile 'com.google.android.gms:play-services-maps:9.6.0'
     compile 'com.sdoward:rxgooglemaps:1.1.1@aar'
+    retrolambdaConfig 'net.orfjackal.retrolambda:retrolambda:+'
 }
